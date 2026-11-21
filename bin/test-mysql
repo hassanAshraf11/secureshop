@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+set -eu
+cd "$(dirname "$0")/.."
+bin/compose --profile tests up -d --wait test-db
+bin/compose run --rm --no-deps -T -e SHOP_TEST_MYSQL=1 -e DB_HOST=test-db \
+  -e DB_USERNAME=shop_tests -e DB_PASSWORD=local-test-db app php vendor/bin/phpunit

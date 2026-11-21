@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+set -eu
+cd "$(dirname "$0")/.."
+if docker compose version >/dev/null 2>&1; then
+    exec docker compose "$@"
+fi
+if [ -x .local-tools/docker-compose ]; then
+    exec .local-tools/docker-compose "$@"
+fi
+echo 'Install Docker Compose v2, then run this command again.' >&2
+exit 1

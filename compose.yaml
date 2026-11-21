@@ -1,0 +1,50 @@
+name: cet431-secureshop
+services:
+  app:
+    build: .
+    env_file: .env
+    ports:
+      - "127.0.0.1:8431:8080"
+    volumes:
+      - shop_storage:/app/storage
+    depends_on:
+      db:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - shop_db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 3s
+      timeout: 3s
+      retries: 35
+  mailpit:
+    image: axllent/mailpit:v1.27
+    ports:
+      - "127.0.0.1:8025:8025"
+  test-db:
+    image: mysql:8.4
+    profiles: ["tests"]
+    environment:
+      MYSQL_DATABASE: shop_test
+      MYSQL_USER: shop_tests
+      MYSQL_PASSWORD: local-test-db
+      MYSQL_ROOT_PASSWORD: local-root-tests
+    tmpfs:
+      - /var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 3s
+      timeout: 3s
+      retries: 35
+volumes:
+  shop_db:
+  shop_storage:

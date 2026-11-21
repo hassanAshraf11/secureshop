@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+set -eu
+cd "$(dirname "$0")/.."
+umask 077
+if [ ! -f .env ]; then cp .env.example .env; fi
+bin/compose build app
+if grep -q '^APP_KEY=$' .env; then
+    key=$(bin/compose run --rm --no-deps -T app php -r 'echo "base64:".base64_encode(random_bytes(32));')
+    case "$key" in base64:*) ;; *) echo 'Could not generate the application key.' >&2; exit 1;; esac
+    sed "s|^APP_KEY=$|APP_KEY=$key|" .env > .env.setup
+    mv .env.setup .env
+fi
+bin/compose up -d
+bin/compose exec -T app php artisan migrate --seed --force
+echo 'SecureShop: http://localhost:8431'
+echo 'Mailpit: http://localhost:8025'

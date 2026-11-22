@@ -105,7 +105,10 @@ If Git is already initialized, skip `git init -b main`; check `git remote -v` be
 
 ## Course material
 
-- [Architecture and transaction walkthrough](docs/architecture.md)
+- [Team organization & responsibilities](docs/team.md)
+- [System Architecture & Lifecycle](docs/architecture.md)
+- [Database Schema & ERD](docs/erd.md)
+- [Threat Model & Attack Surface](docs/threat-model.md)
 - [Security coverage matrix](docs/security-coverage.md)
 - [Checks performed and pending work](docs/verification.md)
 - [Lab 4 and 5 admin-login proposals](docs/admin-login-labs.md)

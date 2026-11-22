@@ -9,3 +9,5 @@
 /storage/framework/cache/data/*
 !/storage/**/.gitignore
 /.local-tools/
+.DS_Store
+*/.DS_Store
